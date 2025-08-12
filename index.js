@@ -14,8 +14,7 @@ const client = twilio(
 );
 
 // File paths
-const CREDENTIALS_PATH = path.join(process.cwd(), "credentials.json");
-const TOKEN_PATH = path.join(process.cwd(), "token.json");
+
 
 const SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"];
 
@@ -27,9 +26,9 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
  * Authorize Gmail API with token saving
  */
 async function authorize() {
-  const { client_secret, client_id, redirect_uris } = JSON.parse(
-    fs.readFileSync(CREDENTIALS_PATH, "utf8")
-  ).installed;
+  const credentials = JSON.parse(process.env.GMAIL_CREDENTIALS);
+const { client_secret, client_id, redirect_uris } = credentials.installed;
+
 
   const oAuth2Client = new google.auth.OAuth2(
     client_id,
@@ -37,10 +36,11 @@ async function authorize() {
     redirect_uris[0]
   );
 
-  if (fs.existsSync(TOKEN_PATH)) {
-    oAuth2Client.setCredentials(JSON.parse(fs.readFileSync(TOKEN_PATH, "utf8")));
-    return oAuth2Client;
-  }
+  if (process.env.GMAIL_TOKEN) {
+  oAuth2Client.setCredentials(JSON.parse(process.env.GMAIL_TOKEN));
+  return oAuth2Client;
+}
+
 
   return getNewToken(oAuth2Client);
 }
