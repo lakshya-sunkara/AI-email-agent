@@ -1,0 +1,12 @@
+# Treat all text files as UTF-8
+* text=auto eol=lf
+
+# Explicitly mark JSON and JS files as text
+*.json text
+*.js text
+
+# Treat images as binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
